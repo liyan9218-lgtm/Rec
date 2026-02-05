@@ -1,0 +1,4009 @@
+# Rec
+students record
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE Student Portal - Attendance & Marks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1f36;
+            --secondary: #2d3561;
+            --accent: #5b7cfa;
+            --accent-light: #7c9dff;
+            --success: #00d4aa;
+            --warning: #ffb800;
+            --danger: #ff4757;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --text-light: #6c7a89;
+            --border: #e1e8ed;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .college-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .portal-title {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .login-card {
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px var(--shadow);
+            padding: 3rem;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-card p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: var(--bg);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(91, 124, 250, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            display: none;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .student-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+            color: white;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .overall-attendance {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .attendance-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .attendance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .attendance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: var(--bg);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .attendance-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .attendance-subject {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .attendance-percent {
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .percent-high {
+            color: var(--success);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .percent-medium {
+            color: var(--warning);
+            background: rgba(255, 184, 0, 0.1);
+        }
+
+        .percent-low {
+            color: var(--danger);
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .marks-table thead {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        }
+
+        .marks-table th {
+            padding: 1.25rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .marks-table td {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .marks-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .marks-table tbody tr:hover {
+            background: var(--bg);
+            transform: scale(1.01);
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .grade-a { background: rgba(0, 212, 170, 0.15); color: var(--success); }
+        .grade-b { background: rgba(91, 124, 250, 0.15); color: var(--accent); }
+        .grade-c { background: rgba(255, 184, 0, 0.15); color: var(--warning); }
+        .grade-f { background: rgba(255, 71, 87, 0.15); color: var(--danger); }
+        .grade-pending { background: rgba(108, 122, 137, 0.1); color: var(--text-light); }
+
+        .error-message {
+            background: rgba(255, 71, 87, 0.1);
+            color: var(--danger);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            display: none;
+            border: 2px solid rgba(255, 71, 87, 0.2);
+            font-weight: 500;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #2d3561 0%, #1a1f36 100%);
+            margin-bottom: 2rem;
+            width: auto;
+            padding: 0.9rem 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(45, 53, 97, 0.3);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 53, 97, 0.4);
+        }
+
+        .info-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(91, 124, 250, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border-radius: 16px;
+            border: 2px solid rgba(91, 124, 250, 0.15);
+            font-size: 0.9rem;
+        }
+
+        .info-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .info-box ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .info-box li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-section {
+            background: linear-gradient(135deg, rgba(255, 184, 0, 0.08) 0%, rgba(255, 152, 0, 0.08) 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--warning);
+        }
+
+        .note-section strong {
+            color: var(--warning);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .login-card {
+                padding: 2rem;
+            }
+
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+
+            .attendance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .college-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="college-name">🎓 ECE Department Portal</div>
+            <div class="portal-title">Student Attendance & Marksheet System - 2nd Year</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="loginSection" class="login-section">
+            <div class="login-card">
+                <h2>Student Login</h2>
+                <p>Enter your roll number to view your attendance and marks</p>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="rollNumber">Roll Number</label>
+                        <input 
+                            type="text" 
+                            id="rollNumber" 
+                            placeholder="e.g., 24ECE02" 
+                            required
+                            autocomplete="off"
+                        >
+                    </div>
+                    <button type="submit" class="btn">🔍 View My Details</button>
+                </form>
+
+                <div id="errorMessage" class="error-message">
+                    ❌ Roll number not found. Please check and try again.
+                </div>
+
+                <div class="info-box">
+                    <strong>📋 Instructions:</strong>
+                    <ul>
+                        <li>Enter your complete roll number (e.g., 24ECE02, 25DECE01)</li>
+                        <li>Roll numbers are case-sensitive</li>
+                        <li>Total 46 students registered in the system</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultsSection" class="results-section">
+            <button class="btn back-btn" onclick="goBack()">
+                ← Back to Login
+            </button>
+
+            <div class="student-header">
+                <div class="student-info">
+                    <div class="info-item">
+                        <span class="info-label">Student Name</span>
+                        <span class="info-value" id="studentName">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Roll Number</span>
+                        <span class="info-value" id="studentRoll">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Branch</span>
+                        <span class="info-value" id="studentClass">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Year</span>
+                        <span class="info-value" id="studentSemester">-</span>
+                    </div>
+                </div>
+                <div class="overall-attendance">
+                    <div class="info-label">Overall Attendance</div>
+                    <div class="attendance-circle" id="overallAttendance">0%</div>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <h3 class="card-title">
+                        📊 Subject-wise Attendance
+                    </h3>
+                    <div class="attendance-grid" id="attendanceStats"></div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">
+                        📝 Marksheet
+                    </h3>
+                    <div class="note-section">
+                        <strong>📌 Note:</strong>
+                        Marks will be updated after exams are conducted. Currently showing attendance data only.
+                    </div>
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks Obtained</th>
+                                <th>Total Marks</th>
+                                <th>Percentage</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marksTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Student Data - Loaded from CSV
+const studentsData = [
+    {
+        "rollNumber": "24ECE02",
+        "name": "MANDHARE HARSHAL TANaji",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 45,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 22
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE03",
+        "name": "PATEL ZARIN MUJAIM",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 49,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 22
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 63
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE04",
+        "name": "QURESHI MADINA BEGUM SHAMSHAD",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 43,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE08",
+        "name": "ANSARI MOHAMMED MUAZ SHAKEEL AHMED",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 0,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE09",
+        "name": "BOLINJKAR MOHD UMAR NAEEM",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 0,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE17",
+        "name": "IDHAAV HARSH SANTOSH",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 40,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 22
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE18",
+        "name": "MOHAMMED LIYAN RAYYAN AHMED",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 26,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE20",
+        "name": "KALDANI MOHAMMAD ZAHOOR ALI",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 78,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 63
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 83
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE21",
+        "name": "KANJOIYA SATYAM SADANAND",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 65,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 78
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 63
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE24",
+        "name": "KHALFE SAIFAN SHOUKET",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 80,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 63
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 83
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE25",
+        "name": "KHAN ANSARAZ SHAKEEL AHMED",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 67,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 78
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 88
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 100
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE26",
+        "name": "KHAN ARMISH MOHD SAJID",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 23,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE28",
+        "name": "KHAN MOHD ABYAN NISAR",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 51,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE29",
+        "name": "KHAN NAYAB ABDUL RADEER",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 4,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE30",
+        "name": "KHAN REHAN ASLAM",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 98,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 83
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 100
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE31",
+        "name": "KHAN YASEEN ABDULLAH",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 60,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE32",
+        "name": "MALIK AAYAN HASEEN AHMAD",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 4,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE33",
+        "name": "MD SOHAIB MANAWAR HUSAIN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 90,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 88
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 100
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE35",
+        "name": "MOHD SADIQUE MOHD EKTAZ",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 61,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 44
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 25
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE36",
+        "name": "MOMIN MOID FUZZIL RIZVI",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 62,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 56
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 63
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE41",
+        "name": "PETKAR MUHAMMAD IBRAHIM AKHLAQUE",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 10,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE43",
+        "name": "PIRKHAN INAYAT ABDULL SHAKUR",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 77,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE47",
+        "name": "QURESHI ILYAS AZBID",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 44,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 25
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE47",
+        "name": "SHAIKH ALMAS RASHID",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 14,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE53",
+        "name": "SHAIKH SOHAIB SIRAJUDDIN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 55,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 44
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 25
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24ECE54",
+        "name": "SHAIKH SAMEER MOHAMMAD SHAKIL",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 62,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 56
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 83
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24TECE58",
+        "name": "ARMAN SAYED ALAM",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 74,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 75
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE01",
+        "name": "NAZIYA RIYAZ CHOUDHARY",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 46,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 56
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE02",
+        "name": "ANSARI MOHAMMED WAHID MOHAMMED AZIZ",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 23,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 100
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE03",
+        "name": "ANSARI MOHD ZEESHAN RIZWAN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 86,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 75
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 100
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE04",
+        "name": "ASEER AHMED MOHD ASHRAF KHAN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 53,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 63
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE05",
+        "name": "AYAAN KHAN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 35,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 100
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE06",
+        "name": "IDRISI MOHD IRFAN MOHD YASIN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 17,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE07",
+        "name": "KADARI HASNAIN SAYYED MOHAMMDHUSAIN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 75,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 80
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE08",
+        "name": "KARJIKAR FARHAN MOHAMMAD HUSSAIN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 58,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE09",
+        "name": "MISBAH MUHAMMED QASIM ABDUL JALEEL",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 68,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 75
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 100
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE10",
+        "name": "MOHAMED HAMZA KHALIL AHMED",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 41,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE11",
+        "name": "MOMIN MUJID MOHAMMED NASIR",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 43,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 89
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 17
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 0
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE12",
+        "name": "PAWASKAR SHEHNEEL NASIR",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 77,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 75
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE13",
+        "name": "RAKHANGI YUSUF RAFIQ",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 67,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 100
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE14",
+        "name": "SHAHVEZ M NAZIM MULLA",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 52,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 67
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 63
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE15",
+        "name": "SHAIKH MOHAMMAD AADIL ABDULLAH",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 40,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 44
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 13
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE16",
+        "name": "SHAIKH MOHAMMED ARFAT NIYAZUDDIN",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 39,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 25
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 67
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "25DECE17",
+        "name": "SHAIKH MOHAMMED MUBASSIR",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 53,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 22
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 50
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 60
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 33
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24DEEO5",
+        "name": "KHAN IMAD",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 36,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 22
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 20
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 25
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    },
+    {
+        "rollNumber": "24DEEO6",
+        "name": "MOHAMMAD ABDULLAH",
+        "class": "B.Tech ECE",
+        "semester": "2nd Year",
+        "avgAttendance": 33,
+        "attendance": [
+            {
+                "subject": "Circuit & System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Power System Engineering (TH)",
+                "percent": 0
+            },
+            {
+                "subject": "Computer Networks (TH)",
+                "percent": 38
+            },
+            {
+                "subject": "CPD-II (TH)",
+                "percent": 33
+            },
+            {
+                "subject": "PSAB-II (TH)",
+                "percent": 40
+            },
+            {
+                "subject": "CEP (Practical)",
+                "percent": 50
+            },
+            {
+                "subject": "CSE Lab (Practical)",
+                "percent": 100
+            },
+            {
+                "subject": "CN Lab (Practical)",
+                "percent": 0
+            }
+        ],
+        "marks": [
+            {
+                "subject": "Circuit & System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Power System Engineering",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "Computer Networks",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "CPD-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            },
+            {
+                "subject": "PSAB-II",
+                "obtained": 0,
+                "total": 100,
+                "grade": "-"
+            }
+        ]
+    }
+];
+
+        // Application Logic
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const rollNumber = document.getElementById('rollNumber').value.trim();
+            const student = studentsData.find(s => s.rollNumber.toUpperCase() === rollNumber.toUpperCase());
+
+            if (student) {
+                displayStudentData(student);
+                document.getElementById('errorMessage').style.display = 'none';
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+
+        function displayStudentData(student) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            document.getElementById('studentName').textContent = student.name;
+            document.getElementById('studentRoll').textContent = student.rollNumber;
+            document.getElementById('studentClass').textContent = student.class;
+            document.getElementById('studentSemester').textContent = student.semester;
+            document.getElementById('overallAttendance').textContent = student.avgAttendance + '%';
+
+            // Color code overall attendance
+            const overallCircle = document.getElementById('overallAttendance');
+            if (student.avgAttendance >= 75) {
+                overallCircle.style.borderColor = 'rgba(0, 212, 170, 0.5)';
+                overallCircle.style.background = 'rgba(0, 212, 170, 0.2)';
+            } else if (student.avgAttendance >= 50) {
+                overallCircle.style.borderColor = 'rgba(255, 184, 0, 0.5)';
+                overallCircle.style.background = 'rgba(255, 184, 0, 0.2)';
+            } else {
+                overallCircle.style.borderColor = 'rgba(255, 71, 87, 0.5)';
+                overallCircle.style.background = 'rgba(255, 71, 87, 0.2)';
+            }
+
+            const attendanceHTML = student.attendance.map(att => {
+                let percentClass = 'percent-high';
+                if (att.percent < 50) percentClass = 'percent-low';
+                else if (att.percent < 75) percentClass = 'percent-medium';
+
+                return `
+                    <div class="attendance-item">
+                        <span class="attendance-subject">${att.subject}</span>
+                        <span class="attendance-percent ${percentClass}">${att.percent}%</span>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('attendanceStats').innerHTML = attendanceHTML;
+
+            const marksHTML = student.marks.map(mark => {
+                const percentage = mark.obtained > 0 ? ((mark.obtained / mark.total) * 100).toFixed(1) : '-';
+                let gradeClass = 'grade-pending';
+                
+                if (mark.grade === 'A' || mark.grade === 'A+') gradeClass = 'grade-a';
+                else if (mark.grade === 'B') gradeClass = 'grade-b';
+                else if (mark.grade === 'C' || mark.grade === 'D') gradeClass = 'grade-c';
+                else if (mark.grade === 'F') gradeClass = 'grade-f';
+
+                return `
+                    <tr>
+                        <td><strong>${mark.subject}</strong></td>
+                        <td>${mark.obtained > 0 ? mark.obtained : 'Pending'}</td>
+                        <td>${mark.total}</td>
+                        <td>${percentage}${percentage !== '-' ? '%' : ''}</td>
+                        <td><span class="grade-badge ${gradeClass}">${mark.grade === '-' ? 'Pending' : mark.grade}</span></td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('marksTableBody').innerHTML = marksHTML;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBack() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('rollNumber').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
